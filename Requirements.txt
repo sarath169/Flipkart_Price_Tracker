@@ -1,0 +1,7 @@
+Required Packages:
+
+datetime
+requests
+logging
+bs4
+openpyxl
