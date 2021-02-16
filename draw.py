@@ -4,12 +4,13 @@ import sys
 import mysql.connector
 import matplotlib.pyplot as plt
 import dotenv
+import logging
 
 dotenv.load_dotenv()
 
 def product_id_input(sql,pid):
     cursor=sql.cursor()
-    print("connection is done")
+    logging.info("connection is done")
     query ='''select * from price where product_id = %s'''
     cursor.execute(query,(pid,))
     data=cursor.fetchall()
