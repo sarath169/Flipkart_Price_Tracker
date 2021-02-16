@@ -9,7 +9,7 @@ from openpyxl import Workbook
 from mysql.connector import Error
 from mysql.connector import errorcode
 
-from Constants import *
+from constants import *
 
 
 def scraper(link):
@@ -36,13 +36,13 @@ def scraper(link):
     return laptops
 def inserting(laptops):
     # try:
-    mysql = mysql.connector.connect(
+    sql = mysql.connector.connect(
     host="localhost",
     user="root",
     password="Mindfire#12",
     database="flipkart_laptops"
     )
-    cursor=mysql.cursor()
+    cursor=sql.cursor()
     n=len(laptops)
     for i in range(n):
         logging.info('executed times',i)
@@ -59,27 +59,17 @@ def inserting(laptops):
         if pid:
             logging.info("in the if statement",pid)
             cursor.execute(query,(list_price,date,pid,))
-            mysql.commit()
+            sql.commit()
         else:
             logging.info("else block",i)
             q1="insert into products (product_name) values (%s)"
             cursor.execute(q1,(name,))
-            mysql.commit()
+            sql.commit()
             cursor.execute("SELECT product_id FROM products WHERE product_name = %s",(name,))
             res=cursor.fetchone()
             pid=res[0]
             cursor.execute(query, (list_price,date,pid,))
-            mysql.commit()
-    mysql.close()
-'''def plot():
-    mysql = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="Mindfire#12",
-    database="flipkart_laptops"
-    )
-    cursor=mysql.cursor()
-    
-'''
+            sql.commit()
+    sql.close()
 result=scraper(FLIPKART_LAPTOPS)
 inserting(result)
