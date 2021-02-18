@@ -1,8 +1,11 @@
 import datetime
+import os
+
 
 import requests
 import logging
 import mysql.connector
+import dotenv
 
 from bs4 import BeautifulSoup
 from openpyxl import Workbook
@@ -36,19 +39,21 @@ def scraper(link):
     return laptops
 def inserting(laptops):
     # try:
-    sql = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="Mindfire#12",
-    database="flipkart_laptops"
+    dotenv.load_dotenv()
+    mydb = mysql.connector.connect(
+    host=os.getenv('mysql_host'),
+    user=os.getenv('mysql_user'),
+    password=os.getenv('db_pwd'),
+    database=os.getenv('db')
     )
-    cursor=sql.cursor()
+    cursor=mydb.cursor()
     n=len(laptops)
     for i in range(n):
         logging.info('executed times',i)
         name=str(laptops[i][0])
-        list_price=str(laptops[i][2])
+        list_price=int(laptops[i][2][1:].replace(',',''))
         date=str(laptops[i][4])
+        date=date[6:16]
         cursor.execute("SELECT product_id FROM products WHERE product_name = %s",(name,))
         res=cursor.fetchone()
         pid=None
@@ -59,17 +64,17 @@ def inserting(laptops):
         if pid:
             logging.info("in the if statement",pid)
             cursor.execute(query,(list_price,date,pid,))
-            sql.commit()
+            mydb.commit()
         else:
             logging.info("else block",i)
             q1="insert into products (product_name) values (%s)"
             cursor.execute(q1,(name,))
-            sql.commit()
+            mydb.commit()
             cursor.execute("SELECT product_id FROM products WHERE product_name = %s",(name,))
             res=cursor.fetchone()
             pid=res[0]
             cursor.execute(query, (list_price,date,pid,))
-            sql.commit()
-    sql.close()
+            mydb.commit()
+    mydb.close()
 result=scraper(FLIPKART_LAPTOPS)
 inserting(result)
