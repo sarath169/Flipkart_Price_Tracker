@@ -6,7 +6,8 @@ import smtplib, ssl
 import dotenv
 import logging
 
-
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 def connection():
     dotenv.load_dotenv()
@@ -17,45 +18,43 @@ def connection():
     database=os.getenv('db')
     )
     return sql
+def send_email (admin, pwd, user, message):
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.ehlo()
+        server.starttls()
+        server.login(admin, pwd)
+        server.sendmail(admin, user, message)
+        server.close()
+        return True
 
 def alert_mail(sql):
     cursor=sql.cursor()
-    query="select user_email from alert"
+    query='''select distinct (SELECT product_name from products pro where pro.product_id=p.product_id) as prod_name, a.threshold, p.product_id, p.listed_price, p.date_time,a.user_email
+from alert a join price p on a.product_id=p.product_id
+where p.date_time = (select max(p2.date_time) from price p2
+where p2.product_id = p.product_id); '''
     cursor.execute(query)
-    emails=cursor.fetchall()
-    for i in emails:
+    data=cursor.fetchall()
+    print(data)
+    for i in data:
         print(i)
-        query="select product_id,threshold from alert where user_email=%s"
-        cursor.execute(query,i)
-        info=cursor.fetchall()
-        for j in info:
-            pid=(j[0])
-            threshold=(j[1])
-            q='''select listed_price from price where product_id=1 '''
-            cursor.execute(q)
-            result=cursor.fetchone()
-            print(result[0])
-            req_price=int(result[0])
-            if req_price>threshold:
-                continue
-            else:
-                sender_email =  os.getenv('sender_email')
-                receiver_email = i[0]
-                pwd = os.getenv('email_pwd')
-                port=465
-                smtp_server = "smtp.gmail.com"
-                sender_email = sender_email  # Enter your address
-                receiver_email = receiver_email # Enter receiver address
-                password = pwd
-                message = """\
-                Subject: "Price Drop alert"
+        price=int(i[3])
+        threshold=i[1]
+        if price>threshold:
+            print("the price is above threshold")
+        else:
+            sender_email =  os.getenv('sender_email')
+            print("sender",sender_email)
+            receiver_email = i[5]
+            print("receiver",i[5])
+            pwd = os.getenv('email_pwd')
+            msg = """\
+            Subject: "Price Drop Alert"
 
-                there is a price drop in the product your are intrested in."""
-                context = ssl.create_default_context()
-                with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
-                    server.login(sender_email, password)
-                    server.sendmail(sender_email, receiver_email, message)
+            The price of the product
+             """+ i[0]+'is priced at '+i[3]+' please have a look if interested.'
 
+            print(send_email(sender_email, pwd, receiver_email, msg))
 def main():
 
     sql=connection()

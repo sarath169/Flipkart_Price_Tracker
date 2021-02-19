@@ -59,7 +59,7 @@ def inserting(laptops):
         pid=None
         if res:
             pid=res[0]
-        query='''insert into price (listed_price,date_time, product_id) values (%s,%s,%s)'''
+        query='''INSERT INTO price (listed_price,date_time, product_id) VALUES (%s,%s,%s)'''
         logging.info("person id is",pid)
         if pid:
             logging.info("in the if statement",pid)
@@ -67,7 +67,7 @@ def inserting(laptops):
             mydb.commit()
         else:
             logging.info("else block",i)
-            q1="insert into products (product_name) values (%s)"
+            q1="INSERT INTO products (product_name) VALUES (%s)"
             cursor.execute(q1,(name,))
             mydb.commit()
             cursor.execute("SELECT product_id FROM products WHERE product_name = %s",(name,))
