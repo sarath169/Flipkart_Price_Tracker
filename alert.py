@@ -1,13 +1,13 @@
 import os
 import sys
 
+
+
 import mysql.connector
-import smtplib, ssl
 import dotenv
 import logging
 
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+from mailjet_rest import Client
 
 def connection():
     dotenv.load_dotenv()
@@ -18,14 +18,6 @@ def connection():
     database=os.getenv('db')
     )
     return sql
-def send_email (admin, pwd, user, message):
-        server = smtplib.SMTP('smtp.gmail.com', 587)
-        server.ehlo()
-        server.starttls()
-        server.login(admin, pwd)
-        server.sendmail(admin, user, message)
-        server.close()
-        return True
 
 def alert_mail(sql):
     cursor=sql.cursor()
@@ -38,23 +30,44 @@ where p2.product_id = p.product_id); '''
     print(data)
     for i in data:
         print(i)
+        prod_name=i[0]
         price=int(i[3])
         threshold=i[1]
         if price>threshold:
             print("the price is above threshold")
         else:
-            sender_email =  os.getenv('sender_email')
-            print("sender",sender_email)
-            receiver_email = i[5]
-            print("receiver",i[5])
-            pwd = os.getenv('email_pwd')
-            msg = """\
-            Subject: "Price Drop Alert"
+            api_key = os.getenv('api_key')
+            api_secret = os.getenv('api_secret')
+            sender_mail=os.getenv('sender_email')
+            reciever_mail=i[5]
+            mailjet = Client(auth=(api_key, api_secret), version='v3.1')
+            data = {
+              'Messages': [
+            				{
+            						"From": {
+            								"Email": sender_mail,
+            								"Name": "Alert"
+            						},
+            						"To": [
+            								{
+            										"Email": reciever_mail,
+            										"Name": "Subscriber"
+            								}
+            						],
+                                    "Variables":{
+                                    "product_name":prod_name,
+                                    "threshold":threshold,
+                                    },
+            						"TemplateID":2454076,
+            						"TemplateLanguage": True,
+            						"Subject": "Price Drop Alert"
+            				}
+            		]
+            }
+            result = mailjet.send.create(data=data)
+            print(result.status_code)
+            print(result.json())
 
-            The price of the product
-             """+ i[0]+'is priced at '+i[3]+' please have a look if interested.'
-
-            print(send_email(sender_email, pwd, receiver_email, msg))
 def main():
 
     sql=connection()

@@ -1,16 +1,20 @@
-import smtplib, ssl
+from flask import Flask, redirect, url_for
+app = Flask(__name__)
 
-port = 465  # For SSL
-smtp_server = "smtp.gmail.com"
-sender_email = "rayala073@gmail.com"  # Enter your address
-receiver_email = "rayala073@gmail.com"  # Enter receiver address
-password = input("Type your password and press enter: ")
-message = """\
-Subject: Hi there
+@app.route('/admin')
+def hello_admin():
+   return 'Hello Admin'
 
-This message is sent from Python."""
+@app.route('/guest/<guest>')
+def hello_guest(guest):
+   return 'Hello %s as Guest' % guest
 
-context = ssl.create_default_context()
-with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
-    server.login(sender_email, password)
-    server.sendmail(sender_email, receiver_email, message)
+@app.route('/user/<name>')
+def hello_user(name):
+   if name =='admin':
+      return redirect(url_for('hello_admin'))
+   else:
+      return redirect(url_for('hello_guest',guest = name))
+
+if __name__ == '__main__':
+   app.run(debug = True)

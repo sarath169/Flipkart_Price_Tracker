@@ -33,7 +33,7 @@ def main():
     datetime=[]
     for i in range(len(result)):
         price.append(result[i][0])
-        datetime.append(result[i][1][6:16])
+        datetime.append(result[i][1])
     plt.plot( datetime,price)
     plt.xlabel('Datetime')
     plt.ylabel('Price')
