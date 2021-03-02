@@ -1,8 +1,6 @@
 import os
 import sys
 
-
-
 import mysql.connector
 import dotenv
 import logging
@@ -11,16 +9,16 @@ from mailjet_rest import Client
 
 def connection():
     dotenv.load_dotenv()
-    sql = mysql.connector.connect(
+    mydb = mysql.connector.connect(
     host=os.getenv('mysql_host'),
     user=os.getenv('mysql_user'),
     password=os.getenv('db_pwd'),
     database=os.getenv('db')
     )
-    return sql
+    return mydb
 
-def alert_mail(sql):
-    cursor=sql.cursor()
+def alert_mail(mydb):
+    cursor=mydb.cursor()
     query='''select distinct (SELECT product_name from products pro where pro.product_id=p.product_id) as prod_name, a.threshold, p.product_id, p.listed_price, p.date_time,a.user_email
 from alert a join price p on a.product_id=p.product_id
 where p.date_time = (select max(p2.date_time) from price p2
@@ -69,9 +67,8 @@ where p2.product_id = p.product_id); '''
             print(result.json())
 
 def main():
-
-    sql=connection()
-    alert_mail(sql)
+    mydb=connection()
+    alert_mail(mydb)
 
 if __name__ == '__main__':
     main()

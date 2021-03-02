@@ -11,7 +11,7 @@ dotenv.load_dotenv()
 def product_id_input(sql,pid):
     cursor=sql.cursor()
     logging.info("connection is done")
-    query ='''select * from price where product_id = %s'''
+    query ='''select * from price where product_id = %s order by date_time'''
     cursor.execute(query,(pid,))
     data=cursor.fetchall()
     return data

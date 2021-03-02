@@ -28,5 +28,4 @@ def manage_db():
     setup_db(mydb)
 
 if __name__ == '__main__':
-    '''main function'''
     manage_db()

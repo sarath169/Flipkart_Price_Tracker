@@ -1,7 +1,6 @@
 import datetime
 import os
 
-
 import requests
 import logging
 import mysql.connector
@@ -14,9 +13,7 @@ from mysql.connector import errorcode
 
 from constants import *
 
-
 def scraper(link):
-    #
     laptops=[]
     log_info=[]
     for i in range(1,5):
