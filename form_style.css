@@ -1,15 +1,12 @@
 body{
-  align-items: center;
-    text-align: center;
-    background-color: yellow;
-    padding: 100px 0 0 100px;
+      text-align: center;
+    background-color: lightgrey;
+    padding: 100px 150px 0 150px;
 }
 /* .centered-form{
 	margin-top: 60px;
 } */
-.parent_container{
 
-}
 
 .centered-form .panel{
 	background: rgba(255, 255, 255, 0.8);
@@ -17,4 +14,8 @@ body{
 }
 .flex{
   display: flex;
+  text-align: center;
+}
+.width{
+  width: 100%;
 }

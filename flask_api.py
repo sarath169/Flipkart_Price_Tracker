@@ -22,6 +22,9 @@ def flask(mydb):
     app = Flask(__name__,template_folder='/home/sarath/Documents/Flipkart_Price_Tracker')
     CORS(app)
 
+    @app.route('/')
+    def index():
+        return redirect('https://sarath169.github.io/Registration-Form/')
     @app.route('/prod_details')
     def prod_details():
         cursor.execute("SELECT * FROM products order by product_id")
@@ -47,6 +50,13 @@ def flask(mydb):
           return redirect(url_for('success'))
        else:
           return redirect(url_for('success'))
+    @app.route('/price_details/<int:pid>')
+    def price_details(pid):
+        cursor.execute('''SELECT (SELECT listed_price FROM price WHERE product_id =%s ORDER BY date_time DESC LIMIT 1 ) AS latest_price,
+                        MAX(listed_price) AS highest_price, MIN(listed_price) AS lowest_price FROM price
+                        WHERE product_id=%s;''',(pid,pid,))
+        data = cursor.fetchall()
+        return jsonify(data)
     return app
 
 if __name__ == '__main__':

@@ -11,7 +11,7 @@ dotenv.load_dotenv()
 def product_id_input(sql,pid):
     cursor=sql.cursor()
     logging.info("connection is done")
-    query ='''select * from price where product_id = %s order by date_time'''
+    query ='''select * from price where product_id = %s'''
     cursor.execute(query,(pid,))
     data=cursor.fetchall()
     return data
@@ -29,15 +29,16 @@ def main():
     pid = sys.argv[1]
     sql=connection()
     result = product_id_input(sql,pid)
-    price=[]
-    datetime=[]
-    for i in range(len(result)):
-        price.append(result[i][0])
-        datetime.append(result[i][1])
+    price=[result[0][0]]
+    datetime=[result[0][1]]
+    for i in range(1,len(result)):
+        if result[i][0]!=result[i-1][0]:
+            price.append(result[i][0])
+            datetime.append(result[i][1])
     plt.plot( datetime,price)
     plt.xlabel('Datetime')
     plt.ylabel('Price')
-    plt.xticks(rotation = 90)
+    plt.xticks(rotation = 0)
     plt.show()
 
 if __name__ == '__main__':

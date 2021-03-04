@@ -76,3 +76,26 @@ request.onerror = function() {
 };
 request.send();
 }
+function fillprice(){
+  var pid=document.getElementById('pid').value;
+  var url = API_BASE_URL+'price_details/'+pid;
+  console.log(url);
+  var request = new XMLHttpRequest();
+  request.open('GET', url, true);
+  request.onload = function() {
+    if (request.status === 200) {
+      var data = JSON.parse(request.responseText);
+      console.log(data);
+      document.getElementById('latest_price').innerHTML ="Latest Price is "+data[0][0];
+      document.getElementById('highest_price').innerHTML ="Highest Price is "+data[0][1];
+      document.getElementById('lowest_price').innerHTML ="Lowest Price is "+data[0][2];
+    }
+    else {
+      console.log('Reached the server, but it returned an error');
+    }
+};
+request.onerror = function() {
+  console.error('An error occurred fetching the JSON from ' + url);
+};
+request.send();
+}
