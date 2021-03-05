@@ -22,9 +22,9 @@ def flask(mydb):
     app = Flask(__name__,template_folder='/home/sarath/Documents/Flipkart_Price_Tracker')
     CORS(app)
 
-    @app.route('/')
-    def index():
-        return redirect('https://sarath169.github.io/Registration-Form/')
+    # @app.route('/')
+    # def index():
+    #     return redirect('https://sarath169.github.io/Registration-Form/')
     @app.route('/prod_details')
     def prod_details():
         cursor.execute("SELECT * FROM products order by product_id")
@@ -33,10 +33,7 @@ def flask(mydb):
 
     @app.route('/success/')
     def success():
-        cursor.execute("SELECT * FROM alert order by product_id")
-        data = cursor.fetchall()
-        return jsonify(data)
-
+        return render_template('reg_success.html')
 
     @app.route('/register',methods = ['POST'])
     def register():
@@ -44,19 +41,29 @@ def flask(mydb):
           email= request.form['email']
           pid=request.form['products']
           threshold=request.form['threshold']
-          query='''INSERT INTO alert VALUES (%s,%s,%s)'''
-          cursor.execute(query,(email,pid,threshold,))
+          mobile=request.form['mobile']
+          query='''INSERT INTO alert (user_email,product_id,threshold,phone_number) VALUES (%s,%s,%s,%s)'''
+          cursor.execute(query,(email,pid,threshold,mobile,))
           mydb.commit()
           return redirect(url_for('success'))
        else:
           return redirect(url_for('success'))
-    @app.route('/price_details/<int:pid>')
-    def price_details(pid):
+
+    @app.route('/price_details/<int:pid>/<int:interval>')
+    def price_details(pid,interval):
         cursor.execute('''SELECT (SELECT listed_price FROM price WHERE product_id =%s ORDER BY date_time DESC LIMIT 1 ) AS latest_price,
                         MAX(listed_price) AS highest_price, MIN(listed_price) AS lowest_price FROM price
-                        WHERE product_id=%s;''',(pid,pid,))
+                        WHERE product_id=%s and date_time > now() - interval %s day ;''',(pid,pid,interval,))
         data = cursor.fetchall()
         return jsonify(data)
+
+    @app.route('/plot_price/<int:pid>/<int:interval>')
+    def price_analysis(pid,interval):
+        cursor.execute('''select * from price where date_time > now() - interval %s day and product_id=%s;
+        ''',(interval,pid,))
+        data=cursor.fetchall()
+        return jsonify(data)
+
     return app
 
 if __name__ == '__main__':

@@ -13,9 +13,8 @@
   <body onload="populate()">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="form_js.js">
-
-    </script>
+    <script type="text/javascript" src="form_js.js"></script>
+    <script type="text/javascript" src="/home/sarath/Documents/package/dist/Chart.js"></script>
     <div class="">
       <div class="">
         <div class="">
@@ -32,6 +31,17 @@
                       <span id="alert-pid" class=""> </span>
                       <!-- <button type="button"  onclick="populate()" name="refesh">refresh</button> -->
                       </div>
+                      <select name="plot" class="width" id="interval" onchange="fillprice() ">
+                      <option value="" selected disabled>Price Analysis Interval</option>
+                      <option value=1>last 24-hours</option>
+                      <option value=7>7 days interval</option>
+                      <option value=15>15 days interval</option>
+                      <option value=30>30 days interval</option>
+                    </select>
+                      <div class="" >
+                        <button type="button" name="button" onclick="chart()">Show Chart</button>
+                        <canvas id="myChart" width="400" height="400"></canvas>
+                      </div>
                       <div class="price_details flex ">
                         <div class="">
         			    				<p id="latest_price" class="form-control input-sm">Latest Price</p>
@@ -46,9 +56,17 @@
                           <span id="alert-email" class=""> </span>
                         </div>
                       </div>
+                      <select name="alert_type" class="width" id="alert_type" onchange="alerttype()">
+                      <option value="" selected disabled>Alert Preference</option>
+                      <option value=0>via Email</option>
+                      <option value=1>via SMS</option>
+                      <option value=11>Both</option>
+                    </select>
                       <div class="form-group inputbox">
       			    				<input type="text" name="email" id="email" class="form-control input-sm" placeholder="Email Address *">
                         <span id="alert-email" class=""> </span>
+                        <input type="text" name="mobile" id="mobile" class="form-control input-sm" placeholder="Phone Number *">
+                        <span id="alert-mobile" class=""> </span>
                       </div>
 
                     </div>

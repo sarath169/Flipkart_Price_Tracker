@@ -6,6 +6,7 @@ function validate()
   var email = document.getElementById('email').value;
   var product_id=document.getElementById('pid').value;
   var threshold = document.getElementById('threshold').value;
+  var mobile = document.getElementById('mobile').value;
   console.log(product_id);
   var mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
@@ -78,7 +79,8 @@ request.send();
 }
 function fillprice(){
   var pid=document.getElementById('pid').value;
-  var url = API_BASE_URL+'price_details/'+pid;
+  var interval = document.getElementById('interval').value;
+  var url = API_BASE_URL+'price_details/'+pid+'/'+interval;
   console.log(url);
   var request = new XMLHttpRequest();
   request.open('GET', url, true);
@@ -98,4 +100,20 @@ request.onerror = function() {
   console.error('An error occurred fetching the JSON from ' + url);
 };
 request.send();
+}
+function alerttype(){
+  var alert = document.getElementById('alert_type').value;
+  console.log(alert);
+  if (alert==0) {
+    document.getElementById("mobile").style.display = "none";
+    document.getElementById("email").style.display="block";
+  }
+   if (alert==1) {
+    document.getElementById("mobile").style.display = "block";
+    document.getElementById("email").style.display="none";
+  }
+  if (alert==11){
+    document.getElementById("mobile").style.display = "block";
+    document.getElementById("mobile").style.display="block";
+  }
 }
