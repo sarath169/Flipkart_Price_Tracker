@@ -49,8 +49,7 @@ def inserting(laptops):
         logging.info('executed times',i)
         name=str(laptops[i][0])
         list_price=int(laptops[i][2][1:].replace(',',''))
-        date=str(laptops[i][4])
-        date=date[6:16]
+        date=laptops[i][4]
         cursor.execute("SELECT product_id FROM products WHERE product_name = %s",(name,))
         res=cursor.fetchone()
         pid=None

@@ -57,7 +57,7 @@ function populate(){
   dropdown.empty();
 dropdown.append('<option selected=true disabled>Choose Product</option>');
 dropdown.prop('selectedIndex', 0);
-var url = API_BASE_URL+'prod_details';
+var url = `${API_BASE_URL}prod_details`;
 
 var request = new XMLHttpRequest();
 request.open('GET', url, true);
@@ -80,7 +80,7 @@ request.send();
 function fillprice(){
   var pid=document.getElementById('pid').value;
   var interval = document.getElementById('interval').value;
-  var url = API_BASE_URL+'price_details/'+pid+'/'+interval;
+  var url = `${API_BASE_URL}price_details/${pid}/${interval}`;
   console.log(url);
   var request = new XMLHttpRequest();
   request.open('GET', url, true);
@@ -101,19 +101,43 @@ request.onerror = function() {
 };
 request.send();
 }
-function alerttype(){
-  var alert = document.getElementById('alert_type').value;
-  console.log(alert);
-  if (alert==0) {
-    document.getElementById("mobile").style.display = "none";
-    document.getElementById("email").style.display="block";
-  }
-   if (alert==1) {
-    document.getElementById("mobile").style.display = "block";
-    document.getElementById("email").style.display="none";
-  }
-  if (alert==11){
-    document.getElementById("mobile").style.display = "block";
-    document.getElementById("mobile").style.display="block";
-  }
+function email_alert(){
+  var email_checkbox = document.getElementById('email_checkbox').value;
+  console.log(email_checkbox);
+  document.getElementById("mobile").style.display = "none";
+  document.getElementById("email").style.display="block";
+
 }
+function mobile_alert(){
+  var mobile_checkbox = document.getElementById('mobile_checkbox').value;
+  console.log(mobile_checkbox);
+  document.getElementById("mobile").style.display = "block";
+  document.getElementById("email").style.display="none";
+}
+function both_alert(){
+  var both = document.getElementById('both').value;
+  console.log(both);
+  document.getElementById("mobile").style.display = "block";
+  document.getElementById("email").style.display="block";
+}
+function renderChart(data, labels) {
+    var ctx = document.getElementById("myChart").getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'This week',
+                data: data,
+            }]
+        },
+    });
+}
+
+$("#renderBtn").click(
+    function () {
+        data = [20000, 14000, 12000, 15000, 18000, 19000, 22000];
+        labels =  ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+        renderChart(data, labels);
+    }
+);

@@ -19,20 +19,21 @@ def connection():
 
 def alert_mail(mydb):
     cursor=mydb.cursor()
-    query='''select distinct (SELECT product_name from products pro where pro.product_id=p.product_id) as prod_name, a.threshold, p.product_id, p.listed_price, p.date_time,a.user_email,a.alert_sent
+    query='''select distinct (SELECT product_name from products pro where pro.product_id=p.product_id) as prod_name, a.threshold, p.product_id, p.listed_price, p.date_time,a.user_email,a.phone_number,a.alert_sent
 from alert a join price p on a.product_id=p.product_id
 where p.date_time = (select max(p2.date_time) from price p2
 where p2.product_id = p.product_id); '''
     cursor.execute(query)
     data=cursor.fetchall()
+    print(data)
     for i in data:
         prod_name=i[0]
         price=int(i[3])
         threshold=i[1]
-        print("alert_sent",i[6])
-        if price>threshold or i[6]:
+        print("alert_sent",i[7])
+        if price>threshold or i[7]:
 
-            print("the price is above threshold")
+            print("the price is above threshold or the alert is already sent")
         else:
             api_key = os.getenv('api_key')
             api_secret = os.getenv('api_secret')
