@@ -7,9 +7,10 @@ function validate()
   var product_id=document.getElementById('pid').value;
   var threshold = document.getElementById('threshold').value;
   var mobile = document.getElementById('mobile').value;
+  var email_checkbox = document.getElementById('email_checkbox').value;
   console.log(product_id);
   var mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-
+  if (email_checkbox == 0){
   if(email == ""){
       document.getElementById('alert-email').innerHTML =" The email field can't be empty";
       document.getElementById('alert-email').style.color="red";
@@ -25,6 +26,7 @@ function validate()
         document.getElementById('alert-email').style.color="red";
         return false;
       }
+    }
       if(product_id == ""){
           document.getElementById('alert-pid').innerHTML =" The product_id can't be empty";
           document.getElementById('alert-pid').style.color="red";
@@ -120,24 +122,79 @@ function both_alert(){
   document.getElementById("mobile").style.display = "block";
   document.getElementById("email").style.display="block";
 }
-function renderChart(data, labels) {
+function renderChart() {
     var ctx = document.getElementById("myChart").getContext('2d');
-    var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'This week',
-                data: data,
-            }]
-        },
-    });
-}
+    var pid=document.getElementById('pid').value;
+    var interval = document.getElementById('interval').value;
+    var url = `${API_BASE_URL}plot_price/${pid}/${interval}`;
+    console.log(url);
+    var request = new XMLHttpRequest();
+    request.open('GET', url, true);
+    request.onload = function() {
+      if (request.status === 200) {
+        var price_data = JSON.parse(request.responseText);
+        var i=0;
+        var data=[],labels=[];
+        for (i=0;i<price_data.length;i++){
+          data.join(price_data[i][0]);
+          labels.join(price_data[i][1]);
+        }
+        // var myChart = new Chart(ctx, {
+        //     type: '',
+        //     data: {
+        //         labels: labels,
+        //         datasets: [{
+        //             label: 'This week',
+        //             data: data,
+        //         }]
+        //     },
+        // });
+//         var chart = new Chart(document.getElementById("myChart"), {
+//     type: 'line',
+//     data: data,
+//     options: {
+//         scales: {
+//             xAxes: [{
+//                 type: 'time',
+//                 time: {
+//                     unit: 'month'
+//                 }
+//             }]
+//         }
+//     }
+// });
+var x = new Chart(document.getElementById("myChart"), {
+   type: 'scatter',
+   data: {
+      datasets: [{
+         label: "Test",
+         data: [{
+            x: 0,
+            y: 5
+         }, {
+            x: 5,
+            y: 10
+         }, {
+            x: 8,
+            y: 5
+         }, {
+            x: 15,
+            y: 0
+         }],
+      }]
+   },
+   options: {
+      responsive: true
+   }
+});
+      }
+      else {
+        console.log('Reached the server, but it returned an error');
+      }
+  };
+  request.onerror = function() {
+    console.error('An error occurred fetching the JSON from ' + url);
+  };
+  request.send();
 
-$("#renderBtn").click(
-    function () {
-        data = [20000, 14000, 12000, 15000, 18000, 19000, 22000];
-        labels =  ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
-        renderChart(data, labels);
-    }
-);
+}

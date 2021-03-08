@@ -23,7 +23,7 @@
       			    		<h3 class="">Flipkart Alert <small>It's free!</small></h3>
       			 			</div>
       			 			<div class="">
-      			    		<form action="http://localhost:5000/register" method="post" onsubmit="return validate()">
+      			    		<form action="http://localhost:5000/register" method="post" onsubmit="">
                       <div class="form-group inputbox">
                         <select name="products" class="width" id="pid">
                         <option value="">Choose Product</option>
@@ -42,7 +42,7 @@
                       </div>
 
                       <div class="" >
-                        <button type="button" name="button" onclick="chart()">Show Chart</button>
+                        <button type="button" name="button" onclick="renderChart()">Show Chart</button>
                         <canvas id="myChart" width="400" height="400"></canvas>
                       </div>
                       <div class="price_details flex ">
