@@ -50,12 +50,12 @@ def inserting(laptops):
         name=str(laptops[i][0])
         list_price=int(laptops[i][2][1:].replace(',',''))
         date=laptops[i][4]
-        cursor.execute("SELECT product_id FROM products WHERE product_name = %s",(name,))
+        cursor.execute("SELECT `product_id` FROM `products` WHERE `product_name` = %s",(name,))
         res=cursor.fetchone()
         pid=None
         if res:
             pid=res[0]
-        query='''INSERT INTO price (listed_price,date_time, product_id) VALUES (%s,%s,%s)'''
+        query='''INSERT INTO `price` (`listed_price`,`date_time`, `product_id`) VALUES (%s,%s,%s)'''
         logging.info("person id is",pid)
         if pid:
             logging.info("in the if statement",pid)
@@ -63,10 +63,10 @@ def inserting(laptops):
             mydb.commit()
         else:
             logging.info("else block",i)
-            q1="INSERT INTO products (product_name) VALUES (%s)"
+            q1="INSERT INTO `products` (`product_name`) VALUES (%s)"
             cursor.execute(q1,(name,))
             mydb.commit()
-            cursor.execute("SELECT product_id FROM products WHERE product_name = %s",(name,))
+            cursor.execute("SELECT `product_id` FROM `products` WHERE `product_name` = %s",(name,))
             res=cursor.fetchone()
             pid=res[0]
             cursor.execute(query, (list_price,date,pid,))

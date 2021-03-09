@@ -19,15 +19,15 @@ def connection():
     return mydb
 def update_db(mydb):
     cursor=mydb.cursor()
-    query='''UPDATE alert SET alert_sent=1 WHERE alert_sent=0'''
+    query='''UPDATE `alert` SET `alert_sent`=1 WHERE `alert_sent`= 0'''
     cursor.execute(query)
     mydb.commit()
 
 def alert_mail(mydb):
     cursor=mydb.cursor()
-    query='''SELECT DISTINCT (SELECT product_name FROM products pro WHERE pro.product_id = p.product_id) AS prod_name, a.threshold, p.product_id, p.listed_price, p.date_time,a.user_email,a.phone_number,a.alert_sent
-            FROM alert a JOIN price p ON a.product_id = p.product_id
-            WHERE p.date_time = (SELECT MAX(p2.date_time) FROM price p2
+    query='''SELECT DISTINCT (SELECT `product_name` FROM `products` pro WHERE pro.product_id = p.product_id) AS prod_name, a.threshold, p.product_id, p.listed_price, p.date_time,a.user_email,a.phone_number,a.alert_sent
+            FROM `alert` a JOIN `price` p ON a.product_id = p.product_id
+            WHERE p.date_time = (SELECT MAX(p2.date_time) FROM `price` p2
             WHERE p2.product_id = p.product_id); '''
     cursor.execute(query)
     data=cursor.fetchall()

@@ -27,7 +27,7 @@ def flask(mydb):
     #     return redirect('https://sarath169.github.io/Registration-Form/')
     @app.route('/prod_details')
     def prod_details():
-        cursor.execute("SELECT * FROM products order by product_id")
+        cursor.execute("SELECT * FROM `products` ORDER BY `product_id`")
         data = cursor.fetchall()
         return jsonify(data)
 
@@ -42,7 +42,7 @@ def flask(mydb):
           pid=request.form['products']
           threshold=request.form['threshold']
           mobile=request.form['mobile']
-          query='''INSERT INTO alert (user_email,product_id,threshold,phone_number) VALUES (%s,%s,%s,%s)'''
+          query='''INSERT INTO `alert` (`user_email`,`product_id`,`threshold`,`phone_number`) VALUES (%s,%s,%s,%s)'''
           cursor.execute(query,(email,pid,threshold,mobile,))
           mydb.commit()
           return redirect(url_for('success'))
@@ -51,15 +51,15 @@ def flask(mydb):
 
     @app.route('/price_details/<int:pid>/<int:interval>')
     def price_details(pid,interval):
-        cursor.execute('''SELECT (SELECT listed_price FROM price WHERE product_id =%s ORDER BY date_time DESC LIMIT 1 ) AS latest_price,
-                        MAX(listed_price) AS highest_price, MIN(listed_price) AS lowest_price FROM price
-                        WHERE product_id=%s and date_time > now() - interval %s day ;''',(pid,pid,interval,))
+        cursor.execute('''SELECT (SELECT `listed_price` FROM `price` WHERE `product_id` =%s ORDER BY `date_time` DESC LIMIT 1 ) AS `latest_price`,
+                        MAX(`listed_price`) AS `highest_price`, MIN(`listed_price`) AS `lowest_price` FROM `price`
+                        WHERE `product_id`=%s AND `date_time` > NOW() - INTERVAL %s DAY ;''',(pid,pid,interval,))
         data = cursor.fetchall()
         return jsonify(data)
 
     @app.route('/plot_price/<int:pid>/<int:interval>')
     def price_analysis(pid,interval):
-        cursor.execute('''select * from price where date_time > now() - interval %s day and product_id=%s;
+        cursor.execute('''SELECT * FROM `price` WHERE `date_time` > NOW() - INTERVAL %s DAY AND `product_id` = %s;
         ''',(interval,pid,))
         data=cursor.fetchall()
         return jsonify(data)
