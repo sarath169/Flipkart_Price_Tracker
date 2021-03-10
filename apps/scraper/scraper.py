@@ -7,7 +7,6 @@ import mysql.connector
 import dotenv
 
 from bs4 import BeautifulSoup
-from openpyxl import Workbook
 from mysql.connector import Error
 from mysql.connector import errorcode
 
@@ -72,5 +71,6 @@ def inserting(laptops):
             cursor.execute(query, (list_price,date,pid,))
             mydb.commit()
     mydb.close()
-result=scraper(FLIPKART_LAPTOPS)
-inserting(result)
+if __name__=='__main__':
+    result=scraper(FLIPKART_LAPTOPS)
+    inserting(result)

@@ -31,14 +31,14 @@ def alert_mail(mydb):
             WHERE p2.product_id = p.product_id); '''
     cursor.execute(query)
     data=cursor.fetchall()
-    print(data)
+    # print(data)
     for i in data:
         prod_name=i[0]
         price=int(i[3])
         threshold=i[1]
-        print("alert_sent",i[7])
+        # print("alert_sent",i[7])
         if price>threshold or i[7]:
-            print("the price is above threshold or the alert is already sent")
+            # print("the price is above threshold or the alert is already sent")
         else:
             if i[5]:
                 api_key = os.getenv('mailjet_api_key')
@@ -70,8 +70,8 @@ def alert_mail(mydb):
                 		]
                 }
                 result = mailjet.send.create(data=data)
-                print(result.status_code)
-                print(result.json())
+                # print(result.status_code)
+                # print(result.json())
             if i[6]:
                 # and set the environment variables. See http://twil.io/secure
                 account_sid = os.getenv('account_sid')
@@ -85,7 +85,7 @@ def alert_mail(mydb):
                                      to='+91 '+i[6]
                                  )
 
-                print(message.sid)
+                # print(message.sid)
             if i[5] and i[6]:
                 account_sid = os.getenv('account_sid')
                 auth_token = os.getenv('auth_token')
@@ -98,7 +98,7 @@ def alert_mail(mydb):
                                      to='+91 '+i[6]
                                  )
 
-                print(message.sid)
+                # print(message.sid)
                 api_key = os.getenv('mailjet_api_key')
                 api_secret = os.getenv('mailjet_api_secret')
                 sender_mail=os.getenv('sender_email')
@@ -128,15 +128,15 @@ def alert_mail(mydb):
                 		]
                 }
                 result = mailjet.send.create(data=data)
-                print(result.status_code)
-                print(result.json())
+                # print(result.status_code)
+                # print(result.json())
 
 
 
-def main():
+def alert():
     mydb=connection()
     alert_mail(mydb)
     update_db(mydb)
 
 if __name__ == '__main__':
-    main()
+    alert()

@@ -122,79 +122,94 @@ function both_alert(){
   document.getElementById("mobile").style.display = "block";
   document.getElementById("email").style.display="block";
 }
-function renderChart() {
-    var ctx = document.getElementById("myChart").getContext('2d');
-    var pid=document.getElementById('pid').value;
-    var interval = document.getElementById('interval').value;
-    var url = `${API_BASE_URL}plot_price/${pid}/${interval}`;
-    console.log(url);
-    var request = new XMLHttpRequest();
-    request.open('GET', url, true);
-    request.onload = function() {
-      if (request.status === 200) {
-        var price_data = JSON.parse(request.responseText);
-        var i=0;
-        var data=[],labels=[];
-        for (i=0;i<price_data.length;i++){
-          data.join(price_data[i][0]);
-          labels.join(price_data[i][1]);
+function renderChart(){
+  var ctx = document.getElementById('myChart').getContext('2d');
+  var pid=document.getElementById('pid').value;
+  var interval = document.getElementById('interval').value;
+  var url = `${API_BASE_URL}plot_price/${pid}/${interval}`;
+  console.log(url);
+  var request = new XMLHttpRequest();
+  request.open('GET', url, true);
+  request.onload = function() {
+    if (request.status === 200) {
+      var data = JSON.parse(request.responseText);
+      var i=0;
+      var price=[];
+      var date = [];
+      price.push(data[0][0]);
+      date.push(data[0][1]);
+      var len=data.length;
+      for(i=1;i<len;i++){
+        if( data[i][0]!=data[i-1][0]){
+        price.push(data[i][0]);
+        date.push(data[i][1]);
+      }
+      }
+      price.push(data[len-1][0]);
+      date.push(data[len-1][1]);
+      console.log(price);
+
+      console.log(date);
+      var chart = new Chart(ctx, {
+          // The type of chart we want to create
+          type: 'line',
+
+          // The data for our dataset
+          data: {
+              labels: date,
+              datasets: [{
+                  label: 'Product Price',
+                  backgroundColor: 'rgb(255, 99, 132)',
+                  borderColor: 'rgb(255, 99, 132)',
+                  data: price
+              }]
+          },
+
+          // Configuration options go here
+          options: {
+            responsive: true,
+            legend: {
+                position: 'bottom',
+            },
+            hover: {
+                mode: 'label'
+            },
+            scales: {
+                xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Date-Time'
+                        }
+                    }],
+                yAxes: [{
+                        display: true,
+                        ticks: {
+                            min:20000,
+                            steps: 20,
+                            stepValue: 5000,
+                            max: 100000
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Price'
+                        }
+                    }]
+            },
+            title: {
+                display: true,
+                text: ''
+            }
         }
-        // var myChart = new Chart(ctx, {
-        //     type: '',
-        //     data: {
-        //         labels: labels,
-        //         datasets: [{
-        //             label: 'This week',
-        //             data: data,
-        //         }]
-        //     },
-        // });
-//         var chart = new Chart(document.getElementById("myChart"), {
-//     type: 'line',
-//     data: data,
-//     options: {
-//         scales: {
-//             xAxes: [{
-//                 type: 'time',
-//                 time: {
-//                     unit: 'month'
-//                 }
-//             }]
-//         }
-//     }
-// });
-var x = new Chart(document.getElementById("myChart"), {
-   type: 'scatter',
-   data: {
-      datasets: [{
-         label: "Test",
-         data: [{
-            x: 0,
-            y: 5
-         }, {
-            x: 5,
-            y: 10
-         }, {
-            x: 8,
-            y: 5
-         }, {
-            x: 15,
-            y: 0
-         }],
-      }]
-   },
-   options: {
-      responsive: true
-   }
-});
-      }
-      else {
-        console.log('Reached the server, but it returned an error');
-      }
-  };
-  request.onerror = function() {
-    console.error('An error occurred fetching the JSON from ' + url);
-  };
-  request.send();
+      });
+    }
+    else {
+      console.log('Reached the server, but it returned an error');
+    }
+};
+request.onerror = function() {
+  console.error('An error occurred fetching the JSON from ' + url);
+};
+request.send();
 
 }

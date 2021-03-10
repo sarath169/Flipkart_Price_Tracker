@@ -59,7 +59,7 @@ def flask(mydb):
 
     @app.route('/plot_price/<int:pid>/<int:interval>')
     def price_analysis(pid,interval):
-        cursor.execute('''SELECT * FROM `price` WHERE `date_time` > NOW() - INTERVAL %s DAY AND `product_id` = %s;
+        cursor.execute('''SELECT `listed_price`,`date_time` FROM `price` WHERE `date_time` > NOW() - INTERVAL %s DAY AND `product_id` = %s;
         ''',(interval,pid,))
         data=cursor.fetchall()
         return jsonify(data)
