@@ -19,12 +19,12 @@ def connection():
 
 def flask(mydb):
     cursor=mydb.cursor()
-    app = Flask(__name__,template_folder='/home/sarath/Documents/Flipkart_Price_Tracker')
+    app = Flask(__name__,template_folder='/home/sarath/Documents/Flipkart_Price_Tracker/templates')
     CORS(app)
 
-    # @app.route('/')
-    # def index():
-    #     return redirect('https://sarath169.github.io/Registration-Form/')
+    @app.route('/')
+    def index():
+        return redirect('https://sarath169.github.io/Registration-Form/')
     @app.route('/prod_details')
     def prod_details():
         cursor.execute("SELECT * FROM `products` ORDER BY `product_id`")

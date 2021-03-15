@@ -48,17 +48,17 @@ def inserting(laptops):
         logging.info('executed times',i)
         name=str(laptops[i][0])
         list_price=int(laptops[i][2][1:].replace(',',''))
-        date=laptops[i][4]
+        # date=laptops[i][4]
         cursor.execute("SELECT `product_id` FROM `products` WHERE `product_name` = %s",(name,))
         res=cursor.fetchone()
         pid=None
         if res:
             pid=res[0]
-        query='''INSERT INTO `price` (`listed_price`,`date_time`, `product_id`) VALUES (%s,%s,%s)'''
+        query='''INSERT INTO `price` (`listed_price`, `product_id`) VALUES (%s,%s)'''
         logging.info("person id is",pid)
         if pid:
             logging.info("in the if statement",pid)
-            cursor.execute(query,(list_price,date,pid,))
+            cursor.execute(query,(list_price,pid,))
             mydb.commit()
         else:
             logging.info("else block",i)
@@ -68,7 +68,7 @@ def inserting(laptops):
             cursor.execute("SELECT `product_id` FROM `products` WHERE `product_name` = %s",(name,))
             res=cursor.fetchone()
             pid=res[0]
-            cursor.execute(query, (list_price,date,pid,))
+            cursor.execute(query, (list_price,pid,))
             mydb.commit()
     mydb.close()
 if __name__=='__main__':

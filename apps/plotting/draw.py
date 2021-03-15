@@ -38,7 +38,7 @@ def main():
     plt.plot( datetime,price)
     plt.xlabel('Datetime')
     plt.ylabel('Price')
-    plt.xticks(rotation = 0)
+    plt.xticks(rotation = 45)
     plt.show()
 
 if __name__ == '__main__':

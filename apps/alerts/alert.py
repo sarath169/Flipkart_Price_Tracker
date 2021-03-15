@@ -37,7 +37,7 @@ def alert_mail(mydb):
         price=int(i[3])
         threshold=i[1]
         # print("alert_sent",i[7])
-        if price>threshold or i[7]:
+        if price > threshold or i[7]:
             # print("the price is above threshold or the alert is already sent")
         else:
             if i[5]:
@@ -134,7 +134,7 @@ def alert_mail(mydb):
 
 
 def alert():
-    mydb=connection()
+    mydb = connection()
     alert_mail(mydb)
     update_db(mydb)
 
